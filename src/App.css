@@ -3,6 +3,7 @@ body{
     height: 100vh;
     background-repeat: no-repeat;
     background-size: cover;
+    
 }
 
 .container {
@@ -11,16 +12,42 @@ body{
     align-items: center;
     height: 100vh;
     flex-direction: column;
+    margin-top: -100px;
+    font-family: fontt2;
+    
 }
 
 .weather-box{
     border: 3px solid white;
-    padding: 50px;
+    padding: 70px;
     border-radius: 30px;
     background-color: azure;
     margin: 20px;
+    
 }
 
-.btn.btn-warning{
+.btn.btn-info{
     margin: 5px;
+    background-color: azure;
 }
+
+.page-name {
+    font-size: 70px;
+    font-family: fontt;
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+    color: aliceblue;
+  }
+  
+  @font-face {
+    font-family: 'fontt';
+    src: url("font/PlayfairDisplay-VariableFont_wght.ttf");
+  }
+  @font-face {
+    font-family: 'fontt2';
+    src: url("font/Bitter-VariableFont_wght.ttf");
+  }
+  button:hover{
+    scale: 1.1;
+  }
