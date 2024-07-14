@@ -8,20 +8,12 @@ import { WiDayCloudy } from "react-icons/wi";
 
 function App() {
   const [weather, setWeather] = useState(null);
-  const [icon, setIcon] = useState(null); // 아이콘 상태 추가
+  const [icon, setIcon] = useState(null);
+  const [forecast, setForecast] = useState(null); // forecast 상태 추가
   const cities = ['Paris', 'New York', 'Tokyo', "Seoul"];
   const [city, setCity] = useState('');
   const [loading, setLoading] = useState(false);
-  const API_KEY = "06c86b306be5bf0a4796dc774a9fc0d1&units=metric";
-
-  const todayData = () => {
-    const week = ['월','화','수','목','금','토','일'];
-    let now = new Date();
-    let todayMonth = (now.getMonth() + 1);
-    let todayDate = now.getDate() > 9 ? now.getDate() : '0' + now.getDate();
-    let dayOfWeek = week[now.getDay()];
-    return todayMonth + '월 ' + todayDate + '일 ' + dayOfWeek + '요일';
-  };
+  const API_KEY = "06c86b306be5bf0a4796dc774a9fc0d1";
 
   const getCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition(
@@ -37,23 +29,51 @@ function App() {
   };
 
   const getWeatherByCurrentLocation = async (lat, lon) => {
-    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
+    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+    let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&cnt=3&appid=${API_KEY}&units=metric`; // forecast API 수정
     setLoading(true);
-    let response = await fetch(url);
-    let data = await response.json();
-    setWeather(data);
-    setIcon(data.weather[0].icon); // 아이콘 상태 설정
-    setLoading(false);
+
+    try {
+      let [weatherResponse, forecastResponse] = await Promise.all([
+        fetch(url),
+        fetch(forecastUrl),
+      ]);
+
+      let weatherData = await weatherResponse.json();
+      let forecastData = await forecastResponse.json();
+
+      setWeather(weatherData);
+      setIcon(weatherData.weather[0].icon);
+      setForecast(forecastData.list.slice(1, 3)); // 다음날과 모레의 예보 설정
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getWeatherByCity = async () => {
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`;
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+    let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&cnt=3&appid=${API_KEY}&units=metric`; // forecast API 수정
     setLoading(true);
-    let response = await fetch(url);
-    let data = await response.json();
-    setWeather(data);
-    setIcon(data.weather[0].icon); // 아이콘 상태 설정
-    setLoading(false);
+
+    try {
+      let [weatherResponse, forecastResponse] = await Promise.all([
+        fetch(url),
+        fetch(forecastUrl),
+      ]);
+
+      let weatherData = await weatherResponse.json();
+      let forecastData = await forecastResponse.json();
+
+      setWeather(weatherData);
+      setIcon(weatherData.weather[0].icon);
+      setForecast(forecastData.list.slice(1, 3)); // 다음날과 모레의 예보 설정
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -74,15 +94,15 @@ function App() {
           </div>
         ) : (
           <div className='container'>
-            <WeatherBox 
-              weather={weather} 
-              icon={icon} // 아이콘 전달
-              date={todayData()} // 날짜 전달
+            <WeatherBox
+              weather={weather}
+              icon={icon}
+              forecast={forecast} // forecast prop 전달
             />
-            <WeatherButton 
-              cities={cities} 
-              setCity={setCity} 
-              getCurrentLocation={getCurrentLocation} 
+            <WeatherButton
+              cities={cities}
+              setCity={setCity}
+              getCurrentLocation={getCurrentLocation}
             />
           </div>
         )}
