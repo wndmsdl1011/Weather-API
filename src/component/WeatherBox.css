@@ -20,21 +20,13 @@
     height: 100px;
   }
 
-  .forecast-container {
-    display: flex;
-    justify-content: space-between; /* 예보를 좌, 중간, 우측에 배치 */
-    margin-top: 20px;
-  }
-  
   .forecast {
     flex: 1;
     text-align: center; /* 예보 내용 가운데 정렬 */
+    margin-top: 50px; /* 위쪽으로 30픽셀 마진 추가 */
+    margin-bottom: -20px;
   }
   
-  .forecast.current {
-    flex: 1;
-    text-align: left; /* 현재 날씨를 좌측에 정렬 */
-  }
 
   .forecast-icon {
     width: 50px; /* 작은 아이콘 크기 조정 */
